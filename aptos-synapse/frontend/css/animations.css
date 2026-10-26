@@ -1,0 +1,80 @@
+/* --- UTILITY STATES --- */
+.hidden { display: none !important; }
+
+/* Fade In / Out */
+.fade-in { animation: fadeIn 0.5s ease-out forwards; }
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* --- SECTION TRANSITIONS --- */
+section { animation: slideUpFade 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
+
+@keyframes slideUpFade {
+    0% { opacity: 0; transform: translateY(20px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* --- SPINNER --- */
+.spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-left-color: var(--color-aptos);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- PULSE EFFECT --- */
+.step.active .step-icon { animation: pulseGlow 2s infinite; }
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 0 0 rgba(46, 216, 167, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(46, 216, 167, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(46, 216, 167, 0); }
+}
+
+/* --- TYPING EFFECT --- */
+.typing-effect { border-right: 2px solid var(--color-aptos); white-space: pre-wrap; animation: blinkCursor 0.75s step-end infinite; }
+.typing-done { border-right: 2px solid transparent; animation: none; }
+
+@keyframes blinkCursor {
+    from, to { border-color: transparent; }
+    50% { border-color: var(--color-aptos); }
+}
+
+/* --- STAGGERED REVEALS --- */
+.slide-in-up { opacity: 0; animation: slideInUp 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards; }
+
+@keyframes slideInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- DATA CABLE ANIMATION (The Sci-Fi Flow) --- */
+.cable-base {
+    stroke: rgba(255, 255, 255, 0.1);
+    stroke-width: 2px;
+    fill: none;
+}
+
+.cable-flow {
+    stroke: var(--color-aptos); /* Cyan/Teal Glow */
+    stroke-width: 3px;
+    fill: none;
+    stroke-linecap: round;
+    /* The Magic: 50px dash (the packet), 600px gap */
+    stroke-dasharray: 50, 600; 
+    animation: flowData 1.5s linear infinite;
+    filter: drop-shadow(0 0 8px var(--color-aptos)); /* Neon Glow */
+}
+
+@keyframes flowData {
+    to {
+        /* Moves the dash offset by the total pattern length (50 + 600) to loop smoothly */
+        stroke-dashoffset: -650; 
+    }
+}

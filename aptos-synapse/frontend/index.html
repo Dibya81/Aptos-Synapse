@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aptos Synapse | AI Agent Delegation</title>
+
+    <link rel="icon" href="data:," />
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet"
+    />
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+
+    <style>
+        #swarm-connections {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .connection-path {
+            fill: none;
+            stroke: rgba(139, 92, 246, 0.2);
+            stroke-width: 2;
+        }
+        #cursor-dot,
+        #cursor-ring {
+            z-index: 99999 !important;
+            pointer-events: none;
+        }
+
+        .tiny-btn {
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            border: 1px solid var(--border-light);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .tiny-btn:hover {
+            border-color: var(--color-aptos);
+            color: var(--color-aptos);
+        }
+
+        .hud-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+            padding: 15px 30px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 99px;
+            backdrop-filter: blur(10px);
+        }
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: var(--font-mono);
+        }
+        .stat-value {
+            font-size: 1rem;
+            color: var(--color-aptos);
+            font-weight: 700;
+        }
+        .stat-value.purple {
+            color: var(--color-purple);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Cursor -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- BIOS Boot -->
+    <div id="bios-screen" class="bios-overlay" style="background:black;z-index:999999;">
+        <div class="bios-content">
+            <div id="bios-log"></div>
+            <div class="bios-cursor">_</div>
+        </div>
+    </div>
+
+    <!-- Background -->
+    <div class="cinematic-noise"></div>
+    <div class="ambient-background">
+        <div class="grid-overlay"></div>
+    </div>
+
+    <div class="app-container">
+        <header class="glass-header">
+            <div class="logo-section">
+                <i data-lucide="zap" class="icon-brand"></i>
+                <span class="brand-name">
+                    Aptos<span class="highlight">Synapse</span>
+                </span>
+            </div>
+
+            <div style="display:flex;gap:20px;align-items:center;">
+                <div id="user-wallet-display" class="wallet-badge hidden">
+                    <span class="status-dot online"></span>
+                    <span id="wallet-address-text" class="font-mono">0x...</span>
+                </div>
+                <button id="about-btn" class="nav-btn magnetic-btn">
+                    Know About Synapse
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <!-- SECTION 1: INPUT -->
+            <section id="input-section" class="active-section">
+                <div class="hero-text">
+                    <h1>
+                        The First <span class="text-gradient">Neural Consensus</span><br />
+                        Layer on Aptos.
+                    </h1>
+                    <p class="subtitle">
+                        Delegating human intent to autonomous agent swarms.
+                    </p>
+                </div>
+
+                <!-- CONFIG PANEL -->
+                <div class="config-panel glass-panel slide-in-up">
+                    <div class="config-header">
+                        <i data-lucide="settings-2"></i> Swarm Configuration
+                    </div>
+
+                    <div class="config-grid">
+                        <!-- ORCHESTRATOR -->
+                        <div class="config-item">
+                            <label>Orchestrator</label>
+                            <select id="select-orchestrator" class="glass-select">
+                                <option value="0x0ef95bbd61613dbe2f853180a3a9f6cd10249b90f2630a7a1bf182417bc3fc65" data-name="DeepSeek R1 8B">DeepSeek R1 8B</option>
+                                <option value="0xe4b542ce122f775f113ba511b3f08eb96413eae22be6cea83327062b475a766d" data-name="Llama 3 Agent">Llama 3 Agent</option>
+                                <option value="0x052c9c26aca8113868d0066498c625fee5dec62bf8778d7adb7843e887b2f9be" data-name="Mistral Agent">Mistral Agent</option>
+                                <option value="0xc9b449ca0862e5a601cf598bd3c91a933e3023987816a218f3cda3127255cd69" data-name="Gemma 2B Agent">Gemma 2B Agent</option>
+                                <option value="0x8eb584eb38dff51bf7b8f16d9b8c72a010b3e7f7c6141675b50c0da16a7085ab" data-name="DeepSeek Coder 6.7B">DeepSeek Coder 6.7B</option>
+                                <option value="0xd86965daf24a5eee9ebd9306b72609e9042ad80f5464e403f2fffc159b61af47" data-name="Qwen 2.5 14B">Qwen 2.5 14B</option>
+                            </select>
+                        </div>
+
+                        <!-- WORKER A -->
+                        <div class="config-item">
+                            <label>Worker Node A</label>
+                            <select id="select-worker-a" class="glass-select">
+                                <option disabled selected>-- Select Node --</option>
+                                <option value="0x0ef95bbd61613dbe2f853180a3a9f6cd10249b90f2630a7a1bf182417bc3fc65" data-name="DeepSeek R1 8B">DeepSeek R1 8B</option>
+                                <option value="0xe4b542ce122f775f113ba511b3f08eb96413eae22be6cea83327062b475a766d" data-name="Llama 3 Agent">Llama 3 Agent</option>
+                                <option value="0x052c9c26aca8113868d0066498c625fee5dec62bf8778d7adb7843e887b2f9be" data-name="Mistral Agent">Mistral Agent</option>
+                                <option value="0xc9b449ca0862e5a601cf598bd3c91a933e3023987816a218f3cda3127255cd69" data-name="Gemma 2B Agent">Gemma 2B Agent</option>
+                                <option value="0x8eb584eb38dff51bf7b8f16d9b8c72a010b3e7f7c6141675b50c0da16a7085ab" data-name="DeepSeek Coder 6.7B">DeepSeek Coder 6.7B</option>
+                                <option value="0xd86965daf24a5eee9ebd9306b72609e9042ad80f5464e403f2fffc159b61af47" data-name="Qwen 2.5 14B">Qwen 2.5 14B</option>
+                            </select>
+                        </div>
+
+                        <!-- WORKER B -->
+                        <div class="config-item">
+                            <label>Worker Node B</label>
+                            <select id="select-worker-b" class="glass-select">
+                                <option disabled selected>-- Select Node --</option>
+                                <option value="0x0ef95bbd61613dbe2f853180a3a9f6cd10249b90f2630a7a1bf182417bc3fc65" data-name="DeepSeek R1 8B">DeepSeek R1 8B</option>
+                                <option value="0xe4b542ce122f775f113ba511b3f08eb96413eae22be6cea83327062b475a766d" data-name="Llama 3 Agent">Llama 3 Agent</option>
+                                <option value="0x052c9c26aca8113868d0066498c625fee5dec62bf8778d7adb7843e887b2f9be" data-name="Mistral Agent">Mistral Agent</option>
+                                <option value="0xc9b449ca0862e5a601cf598bd3c91a933e3023987816a218f3cda3127255cd69" data-name="Gemma 2B Agent">Gemma 2B Agent</option>
+                                <option value="0x8eb584eb38dff51bf7b8f16d9b8c72a010b3e7f7c6141675b50c0da16a7085ab" data-name="DeepSeek Coder 6.7B">DeepSeek Coder 6.7B</option>
+                                <option value="0xd86965daf24a5eee9ebd9306b72609e9042ad80f5464e403f2fffc159b61af47" data-name="Qwen 2.5 14B">Qwen 2.5 14B</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Box -->
+                <div class="input-wrapper glass-panel slide-in-up delay-100">
+                    <div class="input-group">
+                        <i data-lucide="sparkles" class="input-icon"></i>
+                        <input id="user-query" type="text" placeholder="Ask the swarm..." autocomplete="off" />
+                    </div>
+                    <button id="submit-btn" class="neon-button magnetic-btn">
+                        <span class="btn-text">INITIALIZE</span>
+                        <i data-lucide="arrow-right" class="btn-icon"></i>
+                    </button>
+                </div>
+                <!-- HUD STATS -->
+                <div class="hud-stats slide-in-up delay-150">
+                    <div class="stat-item">
+                        <span class="stat-value">14,203</span>
+                        <span class="stat-label">Active Agents</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value purple">842ms</span>
+                        <span class="stat-label">Finality Time</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">99.9%</span>
+                        <span class="stat-label">Consensus Rate</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value purple">0.0002 APT</span>
+                        <span class="stat-label">Avg Gas</span>
+                    </div>
+                </div>
+
+                <!-- Leaderboard -->
+                <div class="leaderboard-section glass-panel slide-in-up delay-200" style="margin-top:40px;">
+                    <div class="config-header">
+                        <i data-lucide="bar-chart-2"></i> Global Performance Leaderboard
+                    </div>
+
+                    <div class="domain-tabs">
+                        <button class="tab-btn active" data-domain="coding">Coding</button>
+                        <button class="tab-btn" data-domain="research">Research</button>
+                        <button class="tab-btn" data-domain="photo">Photo Gen</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="glass-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Agent Model</th>
+                                    <th>Performance Score</th>
+                                    <th>Total Earned (APT)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: LOADING -->
+            <section id="loading-section" class="hidden">
+                <div class="loading-container glass-panel">
+                    <h3 class="loading-title">Establishing Neural Uplink</h3>
+
+                    <div class="timeline">
+
+                        <div class="step pending" id="step-1">
+                            <div class="step-icon"><i data-lucide="brain-circuit"></i></div>
+                            <div class="step-content">
+                                <span class="step-label">Orchestrator Node</span>
+                                <span class="step-desc">Decomposing intent vectors...</span>
+                            </div>
+                            <div class="step-status"></div>
+                        </div>
+
+                        <div class="step pending" id="step-2">
+                            <div class="step-icon"><i data-lucide="share-2"></i></div>
+                            <div class="step-content">
+                                <span class="step-label">Swarm Delegation</span>
+                                <span class="step-desc">Broadcasting tasks to worker subnets...</span>
+                            </div>
+                            <div class="step-status"></div>
+                        </div>
+
+                        <div class="step pending" id="step-3">
+                            <div class="step-icon"><i data-lucide="cpu"></i></div>
+                            <div class="step-content">
+                                <span class="step-label">Parallel Execution</span>
+                                <span class="step-desc">Agents Computing via Move VM...</span>
+                            </div>
+                            <div class="step-status"></div>
+                        </div>
+
+                        <div class="step pending" id="step-4">
+                            <div class="step-icon"><i data-lucide="wallet"></i></div>
+                            <div class="step-content">
+                                <span class="step-label">Atomic Settlement</span>
+                                <span class="step-desc">Distributing micro-payments...</span>
+                            </div>
+                            <div class="step-status"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: RESULTS -->
+            <section id="results-section" class="hidden">
+                <svg id="swarm-connections"></svg>
+
+                <!-- ORCHESTRATOR CARD -->
+                <div class="result-card orchestrator glass-panel glow-purple" id="orchestrator-card">
+                    <div class="card-header">
+                        <div class="agent-identity">
+                            <div class="avatar purple"><i data-lucide="brain-circuit"></i></div>
+                            <div class="agent-info">
+                                <h3>Orchestrator</h3>
+                                <span id="orch-model-name" class="role">...</span>
+                            </div>
+                        </div>
+
+                        <div class="badge-container">
+                            <a href="#" class="chain-badge">
+                                <i data-lucide="link"></i>
+                                <span class="font-mono">0x129...8a9</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <p id="orchestrator-text" class="typing-effect"></p>
+                    </div>
+                </div>
+
+                <!-- WORKERS GRID -->
+                <div class="workers-grid">
+
+                    <!-- Worker B -->
+                    <div class="worker-card glass-panel" id="worker-b">
+                        <div class="worker-header">
+                            <div class="agent-identity">
+                                <div class="avatar emerald"><i data-lucide="database"></i></div>
+                                <div>
+                                    <h4>Agent B</h4>
+                                    <span id="worker-b-model-name" class="role-sm">...</span>
+                                </div>
+                            </div>
+
+                            <div class="score-ring">
+                                <svg viewBox="0 0 36 36" class="circular-chart green">
+                                    <path
+                                        class="circle-bg"
+                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    />
+                                    <path
+                                        class="circle"
+                                        stroke-dasharray="85, 100"
+                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    />
+                                    <text x="18" y="20.35" class="percentage">8.5</text>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="worker-body">
+                            <p id="agent-b-response">Processing...</p>
+                            <button id="view-prompt-btn" class="tiny-btn hidden">View Refined Prompt</button>
+                        </div>
+
+                        <div class="worker-footer">
+                            <span class="payout font-mono">+ 0.0056 APT</span>
+                            <a href="#" class="tx-link">
+                                <i data-lucide="external-link"></i> Proof
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Worker C -->
+                    <div class="worker-card glass-panel" id="worker-c">
+                        <div class="worker-header">
+                            <div class="agent-identity">
+                                <div class="avatar blue"><i data-lucide="shield-check"></i></div>
+                                <div>
+                                    <h4>Agent C</h4>
+                                    <span id="worker-c-model-name" class="role-sm">...</span>
+                                </div>
+                            </div>
+
+                            <div class="score-ring">
+                                <svg viewBox="0 0 36 36" class="circular-chart blue">
+                                    <path
+                                        class="circle-bg"
+                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    />
+                                    <path
+                                        class="circle"
+                                        stroke-dasharray="72, 100"
+                                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    />
+                                    <text x="18" y="20.35" class="percentage">7.2</text>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="worker-body">
+                            <p id="agent-c-response">Processing...</p>
+                        </div>
+
+                        <div class="worker-footer">
+                            <span class="payout font-mono">+ 0.0044 APT</span>
+                            <a href="#" class="tx-link">
+                                <i data-lucide="external-link"></i> Proof
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+                                <!-- PAYMENT BAR -->
+                <div class="payment-bar glass-panel">
+                    <div class="visualization-container">
+
+                        <div class="pie-chart" id="contribution-pie"></div>
+
+                        <div class="payment-details">
+                            <div class="payment-info">
+                                <span class="label">Total Delegation Pool</span>
+                                <span class="amount font-mono">0.0100 APT</span>
+                            </div>
+
+                            <div class="distribution-visual">
+                                <div class="bar-segment emerald-bg" style="width: 0%"></div>
+                                <div class="bar-segment blue-bg" style="width: 0%"></div>
+                            </div>
+
+                            <div class="payment-legend">
+                                <div class="legend-item">
+                                    <span class="dot emerald-bg"></span> Agent B (54%)
+                                </div>
+                                <div class="legend-item">
+                                    <span class="dot blue-bg"></span> Agent C (46%)
+                                </div>
+                                <a href="#" class="tx-hash font-mono" style="margin-top: 5px;">Tx: 0x99f...11a</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LIVE PERFORMANCE COMPARISON -->
+                <div class="glass-panel slide-in-up delay-300" style="margin-top: 20px;">
+                    <div class="config-header">
+                        <i data-lucide="history"></i> Live Performance Comparison
+                    </div>
+
+                    <div class="table-container">
+                        <table class="glass-table">
+                            <thead>
+                                <tr>
+                                    <th>Agent</th>
+                                    <th>Current Score</th>
+                                    <th>Avg Hist. Score</th>
+                                    <th>Total Credits Earned</th>
+                                </tr>
+                            </thead>
+                            <tbody id="results-comparison-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="results-actions">
+                    <button class="secondary-btn magnetic-btn" id="reset-btn">
+                        <i data-lucide="refresh-cw"></i> Start New Query
+                    </button>
+                </div>
+
+            </section>
+        </main>
+
+        <!-- WALLET MODAL -->
+        <div id="wallet-modal" class="modal open">
+            <div class="modal-content glass-panel" style="max-width: 500px; text-align: center;">
+                <div style="margin-bottom: 20px;">
+                    <i data-lucide="wallet" style="width: 48px; height: 48px; color: var(--color-aptos);"></i>
+                </div>
+
+                <h2>Connect <span class="text-gradient">Memory Address</span></h2>
+                <p style="color: var(--text-muted); margin-bottom: 30px;">
+                    Aptos Synapse requires a memory address to deduct credits.
+                </p>
+
+                <input type="text" id="wallet-input"
+                       placeholder="Enter Address (e.g., 0x123...)"
+                       class="glass-input"
+                       style="width: 100%; padding: 12px; margin-bottom: 20px; background: rgba(0,0,0,0.5); border: 1px solid var(--border-light); color: white; border-radius: 8px;">
+
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button class="secondary-btn" id="wallet-later-btn">Explore Only</button>
+                    <button class="neon-button" id="wallet-connect-btn">Connect & Initialize</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABOUT MODAL -->
+        <div id="about-modal" class="modal">
+            <div class="modal-content glass-panel large-dossier">
+                <button class="close-btn" id="close-modal">
+                    <i data-lucide="x"></i>
+                </button>
+                
+                <h2 style="font-size: 2rem;">
+                    WHAT IS <span class="text-gradient">SYNAPSE?</span>
+                </h2>
+
+                <p style="color: var(--text-muted); margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;">
+                    A SIMPLE EXPLANATION
+                </p>
+
+                <div class="dossier-grid">
+                    <div class="dossier-section">
+                        <h3>What is this?</h3>
+                        <p class="dossier-text">
+                            Imagine having a very hard homework assignment.
+                            Instead of doing it alone, you hire a team of super-smart robots.
+                            <br><br>
+                            <strong>Aptos Synapse</strong> is exactly that team.  
+                            It lets you delegate tasks to AI agents.
+                        </p>
+                    </div>
+
+                    <div class="dossier-section">
+                        <h3>Why is it important?</h3>
+                        <p class="dossier-text">
+                            Usually, AI belongs to big corporations.
+                            <br><br>
+                            Synapse lets <strong>anyone</strong> run an AI agent and earn tokens.
+                            <br><br>
+                            Blockchain ensures transparency, fairness, and tamper-proof results.
+                        </p>
+                    </div>
+
+                    <div class="dossier-section" style="grid-column: span 2;">
+                        <h3>Future Scope</h3>
+                        <p class="dossier-text">
+                            Soon, AI agents will manage businesses, automate development cycles,
+                            and even interact autonomously with financial systems.
+                            <br><br>
+                            This is the foundation of the <strong>Autonomous AI Economy</strong>.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 40px;">
+                    <button class="neon-button magnetic-btn" onclick="document.getElementById('about-modal').classList.remove('open')">
+                        GOT IT
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROMPT VIEWER MODAL -->
+        <div id="prompt-modal" class="modal">
+            <div class="modal-content glass-panel" style="max-width: 700px;">
+                <button class="close-btn" id="close-prompt-modal">
+                    <i data-lucide="x"></i>
+                </button>
+
+                <h2><span class="text-gradient">Internal Handoff</span> Data</h2>
+
+                <p style="color: var(--text-muted); font-family: var(--font-mono); font-size: 0.8rem;">
+                    // ENCRYPTED TRANSMISSION: WORKER A → WORKER B
+                </p>
+
+                <div class="glass-panel" style="background: rgba(0,0,0,0.6); max-height: 400px; overflow-y: auto;">
+                    <p id="refined-prompt-content"
+                       style="font-family: var(--font-mono); color: #a5f3fc; font-size: 0.9rem; white-space: pre-wrap;">
+                        [Loading encrypted data...]
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div> <!-- /app-container -->
+
+    <!-- LIBRARIES -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+
+    <!-- MAIN SCRIPT -->
+    <script type="module" src="js/main.js"></script>
+
+</body>
+</html>

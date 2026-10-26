@@ -1,0 +1,20 @@
+{
+  "name": "@synapse/chain-sdk",
+  "version": "1.0.0",
+  "description": "Aptos blockchain SDK for Synapse",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@aptos-labs/ts-sdk": "^1.39.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
+  }
+}

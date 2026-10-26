@@ -1,0 +1,42 @@
+:root {
+    /* --- COLOR PALETTE: Deep Space & Neon --- */
+    
+    /* Backgrounds */
+    --bg-deep: #030305;       /* Almost pure black */
+    --bg-surface: #0f1115;    /* Slightly lighter for cards */
+    --bg-glass: rgba(15, 17, 21, 0.6); /* For glassmorphism */
+    
+    /* Accents (The "Energy") */
+    --color-aptos: #2ED8A7;   /* The Primary Teal */
+    --color-aptos-dim: rgba(46, 216, 167, 0.1);
+    
+    --color-purple: #8B5CF6;  /* Orchestrator Brain */
+    --color-purple-dim: rgba(139, 92, 246, 0.1);
+    
+    --color-blue: #3B82F6;    /* Worker C */
+    --color-emerald: #10B981; /* Worker B */
+
+    /* Text */
+    --text-main: #FFFFFF;
+    --text-muted: #94A3B8;    /* Slate-400 */
+    --text-dark: #475569;     /* Slate-600 */
+
+    /* Borders & Glows */
+    --border-light: rgba(255, 255, 255, 0.08);
+    --border-glow: rgba(46, 216, 167, 0.3);
+    
+    /* --- TYPOGRAPHY --- */
+    --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+    /* --- SPACING & RADIUS --- */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-full: 9999px;
+
+    /* --- ANIMATIONS --- */
+    --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+    --transition-fast: 0.2s ease;
+    --transition-smooth: 0.4s var(--ease-out-expo);
+}

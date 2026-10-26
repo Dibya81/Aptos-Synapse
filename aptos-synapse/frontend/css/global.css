@@ -1,0 +1,233 @@
+/* --- 1. RESET & BASE VARIABLES --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    /* Mouse Tracking Variables */
+    --mouse-x: 0;
+    --mouse-y: 0;
+    --cursor-x: 0.5;
+    --cursor-y: 0.5;
+    
+    /* Cursor Config */
+    --cursor-size: 20px;
+    --cursor-hover-size: 60px;
+}
+
+body {
+    background-color: #020202; /* Deepest Black */
+    color: var(--text-main);
+    font-family: var(--font-ui);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* --- 2. BIOS BOOT SCREEN (THE FIX) --- */
+.bios-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000; /* ESSENTIAL: Solid black background */
+    z-index: 99999;   /* Sit on top of everything */
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 40px;
+    font-family: var(--font-mono);
+    color: #0f0;      /* Matrix Green */
+    overflow: hidden;
+    
+    /* SAFETY MECHANISM: Auto-unlock screen after 6s if JS fails */
+    animation: forceUnlock 0.5s ease 6s forwards;
+}
+
+@keyframes forceUnlock {
+    to {
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
+    }
+}
+
+.bios-content {
+    width: 100%;
+    max-width: 800px;
+}
+
+.bios-line {
+    display: block;
+    margin-bottom: 5px;
+    text-shadow: 0 0 5px #0f0;
+    opacity: 0.8;
+}
+
+.bios-cursor {
+    display: inline-block;
+    width: 10px;
+    height: 20px;
+    background: #0f0;
+    animation: blink 0.1s steps(2) infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* --- 3. SMART HOLOGRAPHIC CURSOR --- */
+#cursor-dot {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 100000; /* Highest Z-Index */
+    transform: translate(-50%, -50%);
+    mix-blend-mode: difference;
+    transition: transform 0.1s ease;
+}
+
+#cursor-ring {
+    position: fixed;
+    width: 30px;
+    height: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99999;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s, background-color 0.3s, border-color 0.3s;
+}
+
+/* Cursor Hover State (Triggered by JS) */
+body.hovering #cursor-ring {
+    width: 50px;
+    height: 50px;
+    border-color: var(--color-aptos);
+    background-color: rgba(46, 216, 167, 0.1);
+}
+
+body.hovering #cursor-dot {
+    transform: translate(-50%, -50%) scale(0.5);
+}
+
+/* --- 4. TYPOGRAPHY & GRADIENTS --- */
+h1, h2, h3, h4 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-main);
+}
+
+.font-mono {
+    font-family: var(--font-mono);
+}
+
+.text-gradient {
+    background: linear-gradient(
+        to right, 
+        #2ED8A7 20%, 
+        #8B5CF6 40%, 
+        #2ED8A7 60%, 
+        #8B5CF6 80%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: shine 4s linear infinite;
+    text-shadow: 0 0 30px rgba(46, 216, 167, 0.4);
+}
+
+@keyframes shine {
+    to { background-position: 200% center; }
+}
+
+/* --- 5. REACTIVE WARP GRID + FLASHLIGHT --- */
+.ambient-background {
+    position: fixed;
+    inset: 0;
+    z-index: -1; /* Behind everything */
+    overflow: hidden;
+    perspective: 800px; /* Essential for 3D depth */
+    background: #000;
+}
+
+/* Flashlight Glow Logic */
+.ambient-background::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    /* The Spotlight */
+    background: radial-gradient(
+        600px circle at calc(var(--cursor-x, 0.5) * 100%) calc(var(--cursor-y, 0.5) * 100%), 
+        rgba(46, 216, 167, 0.15), 
+        transparent 40%
+    );
+    pointer-events: none;
+    z-index: 0;
+}
+
+.grid-overlay {
+    position: absolute;
+    inset: -100%; /* Large overlap to prevent edges showing */
+    width: 300%;
+    height: 300%;
+    z-index: 1;
+
+    /* Grid Lines */
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 80px 80px;
+    
+    /* 3D Transform Logic */
+    transform-style: preserve-3d;
+    transform: 
+        rotateX(calc(var(--mouse-y, 0) * 4deg)) 
+        rotateY(calc(var(--mouse-x, 0) * -4deg))
+        translateZ(-100px);
+
+    /* Spotlight Mask: Only show grid near mouse */
+    mask-image: radial-gradient(
+        1000px circle at calc(var(--cursor-x, 0.5) * 100%) calc(var(--cursor-y, 0.5) * 100%), 
+        black 20%, 
+        transparent 70%
+    );
+    -webkit-mask-image: radial-gradient(
+        1000px circle at calc(var(--cursor-x, 0.5) * 100%) calc(var(--cursor-y, 0.5) * 100%), 
+        black 20%, 
+        transparent 70%
+    );
+    
+    transition: transform 0.05s linear; /* Responsive movement */
+}
+
+/* --- 6. CINEMATIC NOISE OVERLAY --- */
+.cinematic-noise {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.05; /* 5% Opacity */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* --- 7. SCROLLBAR --- */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-aptos); }

@@ -1,0 +1,127 @@
+/* --- LAYOUT STRUCTURE --- */
+
+.app-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1; /* Above background */
+}
+
+/* --- HEADER --- */
+.glass-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    margin-bottom: 60px;
+    /* Optional: Sticky header if content gets long */
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    /* Blur behind header if scrolling */
+    backdrop-filter: blur(5px); 
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.icon-brand {
+    color: var(--color-aptos);
+    width: 28px;
+    height: 28px;
+    filter: drop-shadow(0 0 8px var(--color-aptos-dim));
+}
+
+.brand-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.brand-name .highlight {
+    color: var(--color-aptos);
+}
+
+.header-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-light);
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--text-muted);
+}
+
+.status-dot.online {
+    background-color: var(--color-aptos);
+    box-shadow: 0 0 8px var(--color-aptos);
+}
+
+/* --- SECTIONS --- */
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center input vertically */
+    padding-bottom: 60px;
+}
+
+section {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* --- THE GLASS PANEL UTILITY --- */
+/* The core look of 2025 */
+.glass-panel {
+    background: var(--bg-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    padding: 24px;
+    transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+/* --- GRIDS --- */
+.workers-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two columns side by side */
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Mobile check: stack workers on small screens */
+@media (max-width: 768px) {
+    .workers-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* --- FOOTER --- */
+footer {
+    text-align: center;
+    padding: 40px 0;
+    color: var(--text-dark);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border-light);
+    margin-top: auto;
+}
