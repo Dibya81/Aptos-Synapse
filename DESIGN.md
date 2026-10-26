@@ -46,7 +46,10 @@ Modern centralized AI systems suffer from single-point-of-failure architectures,
 
 The entire transaction and computation lifecycle flows across five distinct architectural layers:
 
-![Aptos Synapse Architecture Pipeline](docs/architecture_pipeline.svg)
+<div align="center">
+  <img src="docs/architecture_diagram.jpg" alt="Aptos Synapse Architecture & Pipeline Diagram" width="100%"/>
+  <p><em>High-Resolution System Architecture & Execution Pipeline (<a href="docs/architecture_pipeline.svg">Vector SVG Version</a>)</em></p>
+</div>
 
 ### 2.1 Complete Architectural Flowchart
 

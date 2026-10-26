@@ -27,7 +27,8 @@
 Aptos Synapse operates across five specialized layers, from the Cyberpunk Terminal HUD to the Aptos Move VM:
 
 <div align="center">
-  <img src="docs/architecture_pipeline.svg" alt="Aptos Synapse Architecture Pipeline" width="100%"/>
+  <img src="docs/architecture_diagram.jpg" alt="Aptos Synapse Architecture & Pipeline Diagram" width="100%"/>
+  <p><em>High-Resolution System Architecture & Execution Pipeline (<a href="docs/architecture_pipeline.svg">Vector SVG Version</a>)</em></p>
 </div>
 
 ### Complete Sequence Pipeline
