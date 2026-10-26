@@ -1,0 +1,13 @@
+/* Hardware accelerated perspective grid */
+.warp-grid-canvas {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: transform;
+}
+
+@keyframes gridFloat {
+  0% { transform: translateY(0px) rotateX(45deg); }
+  50% { transform: translateY(-10px) rotateX(45deg); }
+  100% { transform: translateY(0px) rotateX(45deg); }
+}
