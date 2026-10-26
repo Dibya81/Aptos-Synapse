@@ -320,3 +320,14 @@ aptos_hackathon/
 ## 📄 License
 
 MIT © 2026 Aptos Synapse Team • Built for the **Aptos Hackathon 2026**
+
+---
+
+### 🔗 Architecture Specifications & Protocol References
+
+- **[OpenAPI 3.0 Specification](docs/openapi.yaml)**: Full REST API definitions for Synapse Node.
+- **[Move Contract Specification](docs/MOVE_SPEC.md)**: On-chain escrow and agent registry data models.
+- **[Agent Swarm Protocol](docs/AGENT_PROTOCOL.md)**: Inter-agent messaging schema and consensus rules.
+- **[Contributing Guidelines](CONTRIBUTING.md)**: Development setup, branch etiquette, and PR policies.
+- **[Security Policy](SECURITY.md)**: Vulnerability disclosure SLAs and threat mitigation matrix.
+- **[Changelog](CHANGELOG.md)**: Version history, bug fixes, and feature additions.
