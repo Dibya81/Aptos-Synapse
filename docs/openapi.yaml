@@ -1,0 +1,50 @@
+openapi: 3.0.3
+info:
+  title: Aptos Synapse Node Gateway API
+  description: Autonomous Multi-Agent AI Swarm Orchestration & Aptos Settlement Gateway
+  version: 2.0.0
+servers:
+  - url: http://127.0.0.1:3001
+    description: Local Synapse Node Gateway
+paths:
+  /api/health:
+    get:
+      summary: Health check endpoint
+      responses:
+        '200':
+          description: Gateway status and node uptime
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                  version:
+                    type: string
+                    example: "2.0.0"
+
+  /api/orchestrate/execute:
+    post:
+      summary: Execute multi-agent swarm task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - query
+              properties:
+                query:
+                  type: string
+                  example: "Analyze zero-knowledge rollup throughput on Aptos"
+                agents:
+                  type: array
+                  items:
+                    type: string
+                  example: ["gemma:2b", "mistral:latest"]
+      responses:
+        '200':
+          description: Orchestration result with agent outputs, neural scores, and on-chain tx
