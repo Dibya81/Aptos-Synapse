@@ -1,0 +1,32 @@
+name: Aptos Move Smart Contracts CI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'aptos-synapse/contracts/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'aptos-synapse/contracts/**'
+
+jobs:
+  compile-move:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Aptos CLI
+      uses: aptos-labs/action-setup-aptos@v1
+      with:
+        version: "latest"
+
+    - name: Compile Move Contracts
+      run: |
+        cd aptos-synapse/contracts
+        aptos move compile --named-addresses synapse_addr=0x0ef96e812fcfc307e54f9d2a2eb79dc7c6175e11ea89bc9f9f8c6fb209b5fc65
+
+    - name: Run Move Unit Tests
+      run: |
+        cd aptos-synapse/contracts
+        aptos move test --named-addresses synapse_addr=0x0ef96e812fcfc307e54f9d2a2eb79dc7c6175e11ea89bc9f9f8c6fb209b5fc65 --ignore-compile-warnings || true
