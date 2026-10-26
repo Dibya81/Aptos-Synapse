@@ -48,7 +48,6 @@ The entire transaction and computation lifecycle flows across five distinct arch
 
 <div align="center">
   <img src="docs/architecture_diagram.jpg" alt="Aptos Synapse Architecture & Pipeline Diagram" width="100%"/>
-  <p><em>High-Resolution System Architecture & Execution Pipeline (<a href="docs/architecture_pipeline.svg">Vector SVG Version</a>)</em></p>
 </div>
 
 ### 2.1 Complete Architectural Flowchart

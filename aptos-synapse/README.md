@@ -28,7 +28,6 @@ Aptos Synapse operates across five specialized layers, from the Cyberpunk Termin
 
 <div align="center">
   <img src="docs/architecture_diagram.jpg" alt="Aptos Synapse Architecture & Pipeline Diagram" width="100%"/>
-  <p><em>High-Resolution System Architecture & Execution Pipeline (<a href="docs/architecture_pipeline.svg">Vector SVG Version</a>)</em></p>
 </div>
 
 ### Complete Sequence Pipeline
@@ -284,7 +283,7 @@ aptos_hackathon/
 ├── DESIGN.md                     # Deep architectural & design system specification
 ├── README.md                     # Primary repository documentation
 ├── docs/
-│   ├── architecture_pipeline.svg # Vector architecture pipeline diagram
+│   ├── architecture_diagram.jpg  # System architecture & execution pipeline diagram
 │   └── screenshots/              # Real Playwright browser QA screenshots
 │
 └── aptos-synapse/                # Canonical Production Implementation
